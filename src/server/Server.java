@@ -25,7 +25,6 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 
-
 public class Server extends JFrame{
     private JTextArea jta = new JTextArea();
     private static int port=8000;
