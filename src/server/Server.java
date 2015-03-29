@@ -26,9 +26,9 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Server extends JFrame{
-    private JTextArea jta = new JTextArea();
+    private JTextArea jtextarea = new JTextArea();
     private static int port=8000;
-    private int i = 1; //numero attibué aux clients
+    private int nbrclient = 1; //numero attibué aux clients
     private HashSet<String> names = new HashSet<String>();
     private HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
     
@@ -40,7 +40,7 @@ public static void main(String[] zero) throws IOException {
         
         //put text area on frame
         setLayout(new BorderLayout());
-        add(new JScrollPane(jta),BorderLayout.CENTER);
+        add(new JScrollPane(jtextarea),BorderLayout.CENTER);
         setTitle("Server");
         setSize(500,500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,23 +48,23 @@ public static void main(String[] zero) throws IOException {
         try{
             //create server socket
             ServerSocket server = new ServerSocket(port);
-            jta.append("Sever started at: "+ new Date()+'\n');
+            jtextarea.append("Sever started at: "+ new Date()+ "\n\n");
             
             while(true){
                     //listen for connection request
                     Socket socket = server.accept();
                     //client host name and ip 
                     InetAddress inetAddress = socket.getInetAddress();
-                    jta.append("Client"+i+" with ip " + inetAddress.getHostAddress()+" and with name "+inetAddress.getHostName()+ " is connected.\n");
+                    jtextarea.append("Client"+nbrclient+" with ip " + inetAddress.getHostAddress()+ " is connected.\n");
                     //create a new thread for the connection
-                    HandleClient task = new HandleClient(socket,i);
+                    HandleClient task = new HandleClient(socket,nbrclient);
                     //start new thread
                     new Thread(task).start();
-                    i++;
+                    nbrclient++;
             }
         }
-        catch(IOException ex){
-            System.out.println(ex);
+        catch(IOException exception){
+            System.out.println(exception);
         }
 
       
@@ -101,10 +101,11 @@ public static void main(String[] zero) throws IOException {
                 bw.flush();
                 writer = new PrintWriter(socket.getOutputStream(), true);
                 writers.add(writer);
-
+                
+                //server runs non stop
                 while (true) {
                                         
-                    //receive
+                    //receive text
                     String text = br.readLine();
                     
                     //if the client wants to change his nickname
@@ -116,18 +117,18 @@ public static void main(String[] zero) throws IOException {
                         for (PrintWriter writer : writers) {
                             writer.println("Client"+numclient+ " becomes " + name);
                         }
-                        jta.append("Client"+numclient+ " becomes " + name + "\n");
+                        jtextarea.append("Client"+numclient+ " becomes " + name + "\n");
                     }
                     //if the nickname is not set
                     else if(pseudo==false){
-                        jta.append("Client"+numclient+ " : " + text + "\n");
+                        jtextarea.append("Client"+numclient+ " : " + text + "\n");
                         //broadcast the text to all writers
                         for (PrintWriter writer : writers) {
                             writer.println("Client"+numclient+ " : " + text);
                         }
                     //if the nickname is set
                     }else{
-                        jta.append(name + " : " + text + "\n");
+                        jtextarea.append(name + " : " + text + "\n");
                         //broadcast the text to all writers
                         for (PrintWriter writer : writers) {
                             writer.println(name + " : " + text);
@@ -145,13 +146,14 @@ public static void main(String[] zero) throws IOException {
                 }
                 //Remove the writer
                 if (writer != null) {
-                    jta.append("Client"+numclient+ " has gone");
+                    jtextarea.append("Client"+numclient+ " has gone");
                     writers.remove(writer);
                 }
                 //Close the socket
                 try {
                     socket.close();
-                } catch (IOException e) {
+                } catch (IOException exception) {
+                    System.out.println(exception);
                 }
             }
         }
