@@ -5,6 +5,10 @@
  */
 package server;
 
+/**
+ *
+ * @author Elie
+ */
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,10 +24,7 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 
-/**
- *
- * @author Elie
- */
+
 public class Server extends JFrame{
     private JTextArea jta = new JTextArea();
     private static int port=8000;
