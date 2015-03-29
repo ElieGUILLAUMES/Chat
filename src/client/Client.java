@@ -24,7 +24,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-
 public class Client extends JFrame {
     
     private static int port=8000;
